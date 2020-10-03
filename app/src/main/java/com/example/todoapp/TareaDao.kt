@@ -13,4 +13,7 @@ interface TareaDao {
 
     @Delete
     fun eliminarTarea(tarea: Tarea)
+
+    @Query("SELECT * FROM tarea")
+    fun getTareas(): List<Tarea>
 }

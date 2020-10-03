@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.tarea_item.view.*
 
-class TareaAdapter(private val tareas: ArrayList<Tarea> = ArrayList()) : RecyclerView.Adapter<TareaAdapter.TareaViewHolder>() {
+class TareaAdapter(private val tareas: ArrayList<Tarea> = ArrayList(), private val listener: TareaAdapterListener) : RecyclerView.Adapter<TareaAdapter.TareaViewHolder>() {
 
     class TareaViewHolder(view : View) : RecyclerView.ViewHolder(view)
 
@@ -45,20 +45,25 @@ class TareaAdapter(private val tareas: ArrayList<Tarea> = ArrayList()) : Recycle
     override fun onBindViewHolder(holder: TareaViewHolder, position: Int) {
         holder.itemView.nombre.text = tareas[position].nombre
         holder.itemView.tarea_terminada.isChecked = tareas[position].terminada
-        if(holder.itemView.tarea_terminada.isChecked)
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.colorPrimaryDark))
-        else
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.colorPrimary))
+        if(holder.itemView.tarea_terminada.isChecked){}
+
+        else {}
+
         holder.itemView.tarea_terminada.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked)
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.colorPrimaryDark))
-            else
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.colorPrimary))
+            listener.onTareaChecked(tareas[position], isChecked)
+            if(isChecked){}
+
+            else{}
+
         }
     }
 
     override fun getItemCount(): Int {
         return tareas.size
     }
+
+interface TareaAdapterListener {
+    fun onTareaChecked(tarea: Tarea, terminada: Boolean)
+}
 
 }

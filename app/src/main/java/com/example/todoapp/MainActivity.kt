@@ -13,19 +13,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TareaAdapter.TareaAdapterListener {
 
     val AGREGAR_TAREA_CODE = 1
 
     lateinit var tareaAdapter: TareaAdapter
     lateinit var mainLayout : ConstraintLayout
+    lateinit var tareaDao: TareaDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        tareaDao = AppDatabase.getInstance(this).tareaDao()
+
         mainLayout = activity_content
-        tareaAdapter = TareaAdapter()
+        val tareas = ArrayList<Tarea>(tareaDao.getTareas())
+        tareaAdapter = TareaAdapter(tareas, this)
         recycler_view.adapter = tareaAdapter
         recycler_view.layoutManager = LinearLayoutManager(this)
         recycler_view.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
@@ -56,9 +60,11 @@ class MainActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val posicion = viewHolder.adapterPosition
                 val tarea = tareaAdapter.getTarea(posicion)
+                tareaDao.eliminarTarea(tarea)
                 tareaAdapter.eliminarTarea(posicion)
                 val snackbar = Snackbar.make(mainLayout, "Eliminaste una tarea", Snackbar.LENGTH_LONG)
                 snackbar.setAction("Deshacer") {
+                    tareaDao.insertarTarea(tarea)
                     tareaAdapter.restaurarTarea(posicion, tarea)
                 }
                 snackbar.setActionTextColor(Color.YELLOW)
@@ -75,8 +81,15 @@ class MainActivity : AppCompatActivity() {
         if(requestCode == AGREGAR_TAREA_CODE) {
             if(resultCode == Activity.RESULT_OK) {
                 val tareaDescripcion = data!!.extras!!["tarea"] as String
-                tareaAdapter.agregarTarea(Tarea(tareaDescripcion, false))
+                val tareaCreada = Tarea(tareaDescripcion, false)
+                tareaDao.insertarTarea(tareaCreada)
+                tareaAdapter.agregarTarea(tareaCreada)
             }
         }
+    }
+
+    override fun onTareaChecked(tarea: Tarea, terminada: Boolean) {
+        tarea.terminada = terminada
+        tareaDao.actualizarTarea(tarea)
     }
 }
