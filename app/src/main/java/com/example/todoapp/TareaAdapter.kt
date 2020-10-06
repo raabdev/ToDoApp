@@ -1,5 +1,9 @@
 package com.example.todoapp
 
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StrikethroughSpan
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,15 +49,23 @@ class TareaAdapter(private val tareas: ArrayList<Tarea> = ArrayList(), private v
     override fun onBindViewHolder(holder: TareaViewHolder, position: Int) {
         holder.itemView.nombre.text = tareas[position].nombre
         holder.itemView.tarea_terminada.isChecked = tareas[position].terminada
-        if(holder.itemView.tarea_terminada.isChecked){}
-
-        else {}
+        if(holder.itemView.tarea_terminada.isChecked){
+            val texto = holder.itemView.nombre.text
+            val textoSpan = SpannableString(texto)
+            textoSpan.setSpan(StrikethroughSpan(), 0, textoSpan.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            holder.itemView.nombre.text = textoSpan
+        } else {}
 
         holder.itemView.tarea_terminada.setOnCheckedChangeListener { buttonView, isChecked ->
             listener.onTareaChecked(tareas[position], isChecked)
-            if(isChecked){}
+            if(isChecked){
+                val texto = holder.itemView.nombre.text
+                val textoSpan = SpannableString(texto)
+                textoSpan.setSpan(StrikethroughSpan(), 0, textoSpan.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                holder.itemView.nombre.text = textoSpan
+            } else {
 
-            else{}
+            }
 
         }
     }
