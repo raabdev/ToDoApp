@@ -54,7 +54,10 @@ class TareaAdapter(private val tareas: ArrayList<Tarea> = ArrayList(), private v
             val textoSpan = SpannableString(texto)
             textoSpan.setSpan(StrikethroughSpan(), 0, textoSpan.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             holder.itemView.nombre.text = textoSpan
-        } else {}
+        } else {
+            val texto = holder.itemView.nombre.text.toString()
+            holder.itemView.nombre.text = texto
+        }
 
         holder.itemView.tarea_terminada.setOnCheckedChangeListener { buttonView, isChecked ->
             listener.onTareaChecked(tareas[position], isChecked)
@@ -64,7 +67,8 @@ class TareaAdapter(private val tareas: ArrayList<Tarea> = ArrayList(), private v
                 textoSpan.setSpan(StrikethroughSpan(), 0, textoSpan.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 holder.itemView.nombre.text = textoSpan
             } else {
-
+                val texto = holder.itemView.nombre.text.toString()
+                holder.itemView.nombre.text = texto
             }
 
         }
